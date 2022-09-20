@@ -1,0 +1,13 @@
+body {
+    text-align: center;
+}
+
+#scoreboard {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin: 0 30% 0 30%;
+}
+
+#scoreboard > h2 {
+    margin: 0;
+}
