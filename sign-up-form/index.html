@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Sign-up Form</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="flex-outer">
+        <section class="background">
+            <img src="background.avif" alt="" id="background-img">
+        </section>
+
+        <section class="signup-form">
+            <div>
+                <div class="form-info padded">
+                    <h1>This is not a real online service! You know you need something like this in your life to help
+                        you
+                        realize your deepest dreams. Signup <em>now</em> to get started.</h1>
+                    <h1>You <em>know</em> you want to.</h1>
+                </div>
+                <form method="form">
+                    <div class="form-grid padded">
+                        <h1 id="form-title">Let's do this!</h1>
+                        <p>
+                            <label for="fname">First Name</label>
+                            <input type="text" id="fname" name="fname">
+                        </p>
+                        <p>
+                            <label for="lname">Last Name</label>
+                            <input type="text" id="lname" name="lname">
+                        </p>
+                        <p>
+                            <label for="email">Email</label>
+                            <input type="email" name="email" id="email">
+                        </p>
+                        <p>
+                            <label for="phone">Phone Number</label>
+                            <input type="tel" name="phone" id="phone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}">
+                        </p>
+                        <p>
+                            <label for="password">Password</label>
+                            <input type="password" name="password" class="error">
+                            <br>
+                            <span class="error-text">*Passwords do not match</span>
+                        </p>
+                        <p>
+                            <label for="password-confirm">Confirm Password</label>
+                            <input type="password" name="password-confirm" id="password-confirm" class="error">
+                        </p>
+                    </div>
+                    <div class="form-submit padded">
+                        <button type="submit">Create Account</button>
+                        <p>Already have an account?</p>
+                    </div>
+                </form>
+            </div>
+
+        </section>
+    </div>
+</body>
+
+</html>
