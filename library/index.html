@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Library App</h1>
+    </header>
+
+    <main>
+      <section class="main-container">
+        <button id="add-book">add book</button>
+        <br />
+        <br />
+
+        <section class="display">
+          <div>Display Library</div>
+          <div id="library"></div>
+        </section>
+      </section>
+
+      <section class="input-book">
+        <form action="" id="add-form" class="click-off">
+          <div id="close"></div>
+          <label for="book-name">Name* </label>
+          <input type="text" id="book-name" required />
+
+          <label for="book-author">Author*</label>
+          <input type="text" id="book-author" required />
+
+          <label for="num-pages">Number of Pages*</label>
+          <input type="number" id="num-pages" required />
+
+          <label for="">Did you read?*</label>
+          <div>
+            <input type="radio" id="read-y" name="read" required />
+            <label for="read-y">Yes</label>
+            <input type="radio" id="read-n" name="read" />
+            <label for="read-n">No</label>
+          </div>
+
+          <button type="submit">Add Book</button>
+        </form>
+      </section>
+    </main>
+    <script src="main.js"></script>
+  </body>
+</html>
