@@ -1,6 +1,7 @@
 let myLibrary = [];
 
-function Book(name, author, pages, read) {
+function Book(id, name, author, pages, read) {
+  this.id = id;
   this.name = name;
   this.author = author;
   this.pages = pages;
@@ -16,9 +17,10 @@ function addBookToLibrary(...book) {
   myLibrary = myLibrary.concat(book);
 }
 
-const theHobbit = new Book("The Hobbit1", "J.R.R. Tolkien", 295, true);
-const theHobbit2 = new Book("The Hobbit2", "J.R.R. Tolkien", 295, true);
-const theHobbit3 = new Book("The Hobbit3", "J.R.R. Tolkien", 295, true);
+// some sample books
+const theHobbit = new Book(-2, "The Hobbit1", "J.R.R. Tolkien", 295, true);
+const theHobbit2 = new Book(-1, "The Hobbit2", "J.R.R. Tolkien", 295, true);
+const theHobbit3 = new Book(0, "The Hobbit2", "J.R.R. Tolkien", 295, true);
 
 addBookToLibrary(theHobbit, theHobbit2, theHobbit3);
 // console.log("library", myLibrary);
@@ -26,12 +28,13 @@ addBookToLibrary(theHobbit, theHobbit2, theHobbit3);
 const displayLibrary = () => {
   const library = document.querySelector("#library");
   library.innerHTML = "";
-  myLibrary.map((book) => {
+  myLibrary.map((book, index) => {
     // console.log(book.name);
     const ul = document.createElement("ul");
     ul.classList.add("book-card");
+    ul.setAttribute("id", book.id);
     for (const attr in book) {
-      if (attr !== "info") {
+      if (attr !== "info" && attr !== "id") {
         const el = document.createElement("li");
         el.innerHTML = `<strong>${
           attr.charAt(0).toUpperCase() + attr.slice(1)
@@ -40,22 +43,17 @@ const displayLibrary = () => {
       }
     }
     library.appendChild(ul);
+    ul.innerHTML = "<span class='close remove-book'></span>" + ul.innerHTML;
   });
 };
 
 displayLibrary();
 
 const bookForm = document.querySelector("#add-form");
-
-document.querySelector("#add-book").addEventListener("click", function (e) {
-  e.preventDefault();
-  bookForm.className = "click-on";
-  document.querySelector(".main-container").style.filter = "blur(20px)";
-});
-
 const addBook = bookForm.addEventListener("submit", function (e) {
   e.preventDefault();
   const newBook = new Book(
+    myLibrary.length + 1,
     this.elements["book-name"].value,
     this.elements["book-author"].value,
     this.elements["num-pages"].value,
@@ -68,12 +66,24 @@ const addBook = bookForm.addEventListener("submit", function (e) {
   document.querySelector(".main-container").style.filter = "none";
 });
 
-document.querySelector("#close").addEventListener("click", function (e) {
-  e.preventDefault();
-  resetInputs();
-  displayLibrary();
-  bookForm.className = "click-off";
-  document.querySelector(".main-container").style.filter = "none";
+document.addEventListener("click", function (e) {
+  if (e.target.matches(".remove-book")) {
+    // remove book from library
+    myLibrary = myLibrary.filter((book) => book.id !== +e.target.parentNode.id);
+    displayLibrary();
+  } else if (e.target.matches("#close-input")) {
+    // close book add input
+    e.preventDefault();
+    resetInputs();
+    displayLibrary();
+    bookForm.className = "click-off";
+    document.querySelector(".main-container").style.filter = "none";
+  } else if (e.target.matches("#add-book")) {
+    // click add book, blur background
+    e.preventDefault();
+    bookForm.className = "click-on";
+    document.querySelector(".main-container").style.filter = "blur(20px)";
+  }
 });
 
 const resetInputs = () => {
