@@ -18,9 +18,15 @@ function addBookToLibrary(...book) {
 }
 
 // some sample books
-const theHobbit = new Book(-2, "The Hobbit1", "J.R.R. Tolkien", 295, true);
-const theHobbit2 = new Book(-1, "The Hobbit2", "J.R.R. Tolkien", 295, true);
-const theHobbit3 = new Book(0, "The Hobbit2", "J.R.R. Tolkien", 295, true);
+const theHobbit = new Book(-2, "The Hobbit", "J.R.R. Tolkien", 295, true);
+const theHobbit2 = new Book(
+  -1,
+  "Who Moved My Cheese?",
+  "Spencer Johnson",
+  94,
+  true
+);
+const theHobbit3 = new Book(0, "The Little Prince", "Saint-Exupéry", 96, false);
 
 addBookToLibrary(theHobbit, theHobbit2, theHobbit3);
 // console.log("library", myLibrary);
@@ -43,7 +49,8 @@ const displayLibrary = () => {
       }
     }
     library.appendChild(ul);
-    ul.innerHTML = "<span class='close remove-book'></span>" + ul.innerHTML;
+    const readToggle = book.read ? "unread" : "read";
+    ul.innerHTML = `<span class='close remove-book'></span><br/>${ul.innerHTML}<br/><span class='read'>Mark as <button id='book-read-toggle'>${readToggle}</button></span>`;
   });
 };
 
@@ -67,22 +74,30 @@ const addBook = bookForm.addEventListener("submit", function (e) {
 });
 
 document.addEventListener("click", function (e) {
+  e.preventDefault();
   if (e.target.matches(".remove-book")) {
     // remove book from library
     myLibrary = myLibrary.filter((book) => book.id !== +e.target.parentNode.id);
     displayLibrary();
   } else if (e.target.matches("#close-input")) {
     // close book add input
-    e.preventDefault();
     resetInputs();
     displayLibrary();
     bookForm.className = "click-off";
     document.querySelector(".main-container").style.filter = "none";
   } else if (e.target.matches("#add-book")) {
     // click add book, blur background
-    e.preventDefault();
     bookForm.className = "click-on";
     document.querySelector(".main-container").style.filter = "blur(20px)";
+  } else if (e.target.matches("#book-read-toggle")) {
+    const changeBook = myLibrary.find(
+      (book) => book.id == +e.target.parentNode.parentNode.id
+    );
+    changeBook.read = !changeBook.read;
+    myLibrary = myLibrary.map((book) =>
+      book.id !== changeBook.id ? book : changeBook
+    );
+    displayLibrary();
   }
 });
 

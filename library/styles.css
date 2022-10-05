@@ -50,6 +50,11 @@ form {
   cursor: pointer;
 }
 
+.read {
+  display: flex;
+  justify-content: end;
+}
+
 .click-on {
   visibility: visible;
 }
