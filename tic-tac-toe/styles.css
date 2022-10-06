@@ -1,0 +1,56 @@
+.main-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#game-grid {
+  /* border: 1px blue solid; */
+  list-style: none;
+  width: 50vw;
+  height: 50vw;
+
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+  padding-left: 0;
+}
+
+.grid-item {
+  border: 2px black solid;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* background-image: url("img/blackcat.svg"); */
+  background-size: 4rem;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+img {
+  width: 100px;
+}
+
+#grid-1,
+#grid-2,
+#grid-3 {
+  border-top: none;
+}
+
+#grid-1,
+#grid-4,
+#grid-7 {
+  border-left: none;
+}
+
+#grid-3,
+#grid-6,
+#grid-9 {
+  border-right: none;
+}
+
+#grid-7,
+#grid-8,
+#grid-9 {
+  border-bottom: none;
+}
