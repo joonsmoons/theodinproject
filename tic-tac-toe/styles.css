@@ -28,6 +28,10 @@
   font-size: 4rem;
 }
 
+.grid-item:hover {
+  background-color: #f5fbef;
+}
+
 img {
   width: 100px;
 }
