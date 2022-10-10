@@ -14,16 +14,29 @@
 //   }
 // });
 
-// index wins
-// 012, 345, 678, 036, 147, 258, 048
-
 // object and methods to initialize and display gameBoard
-
 const game = (() => {
   const gameBoard = ["", "", "", "", "", "", "", "", ""];
   const positionResidue = [...Array(9).keys()];
   const gameEnd = false;
-  const playHistory = [];
+  // const playHistory = [];
+
+  const setGameBoard = (playPosition, tool) => {
+    gameBoard[playPosition] = tool;
+  };
+
+  const winningCombinations = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6],
+  ];
+
+  const getWinningCombinations = () => winningCombinations;
 
   const gameCells = document.querySelectorAll(".grid-item");
   const displayController = () => {
@@ -38,10 +51,10 @@ const game = (() => {
   };
 
   return {
-    gameBoard,
-    playHistory,
+    setGameBoard,
     positionResidue,
     gameEnd,
+    getWinningCombinations,
     displayController,
   };
 })();
@@ -50,31 +63,40 @@ const Player = (tool, name = "player") => {
   const playHistory = [];
   const getName = () => name;
   const getTool = () => tool; // O or X
-  let endTurn = false;
-
   const getPlayHistory = () => playHistory;
 
   const updateBoard = (playPosition) => {
-    game.gameBoard[playPosition] = tool;
+    game.setGameBoard(playPosition, tool);
     playHistory.push(playPosition);
-    game.playHistory.push(playPosition);
     game.positionResidue = game.positionResidue.filter((cell) => {
       // update game position residue
       return cell !== playPosition;
     });
     game.displayController();
+    checkWin();
+  };
+
+  const checkWin = () => {
+    for (combination of game.getWinningCombinations()) {
+      const intersection = playHistory.filter((element) =>
+        combination.includes(element)
+      );
+      if (intersection.length === 3) {
+        // console.log(intersection);
+        win();
+      }
+    }
   };
 
   const playGame = () => {
     return new Promise(function play(resolve) {
+      if (game.gameEnd) return resolve();
       if (name === "computer") {
         setTimeout(() => {
           const playPosition =
             game.positionResidue[
               Math.floor(Math.random() * game.positionResidue.length)
             ];
-          //   document.getElementById(`grid-${playPosition}`).click();
-          //   console.log(`${name} played ${playPosition}`);
           updateBoard(playPosition);
           resolve();
         }, 500);
@@ -84,7 +106,6 @@ const Player = (tool, name = "player") => {
         grid.addEventListener(
           "click",
           (e) => {
-            //   console.log(e.target);
             if (
               e.target.id &&
               game.positionResidue.includes(+e.target.id.replace(/^\D+/g, ""))
@@ -104,45 +125,26 @@ const Player = (tool, name = "player") => {
 
   const win = () => {
     game.gameEnd = true;
+    console.log(`${name} wins the game!`);
   };
 
   return { getName, getTool, getPlayHistory, playGame };
 };
 
 const Controller = () => {
-  // document.addEventListener("click", function(e) {
-  //   if (e.target.value)
-  // })
-
   const startGame = async () => {
     const player = Player("O", "player");
     const computer = Player("X", "computer");
-
-    // // console.log(player, computer);
-    while (game.positionResidue.length > 0) {
+    while (game.positionResidue.length > 1 && !game.gameEnd) {
       await player.playGame();
       await computer.playGame();
       console.log(`player history ${player.getPlayHistory()}`);
       console.log(`computer history ${computer.getPlayHistory()}`);
     }
-    // console.log(playerGame, computerGame);
   };
 
   return { startGame };
 };
-
-// choose O or X
-
-// const Controller = (player, computer) => {
-//   const currentGameBoard = game.gameBoard;
-// };
-
-// const player = Player("O", "player");
-// const computer = Player("X", "computer");
-
-// player manually selects first cell
-// computer randomly selects first cell
-// player manually selects second cell
 
 const control = Controller();
 control.startGame();
