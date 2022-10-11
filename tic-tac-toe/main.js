@@ -16,13 +16,40 @@
 
 // object and methods to initialize and display gameBoard
 const game = (() => {
-  const gameBoard = ["", "", "", "", "", "", "", "", ""];
-  const positionResidue = [...Array(9).keys()];
-  const gameEnd = false;
-  // const playHistory = [];
+  let gameBoard = ["", "", "", "", "", "", "", "", ""];
+  let positionResidue = [...Array(9).keys()];
+  let gameEnd = false;
 
-  const setGameBoard = (playPosition, tool) => {
+  const gameCells = document.querySelectorAll(".grid-item");
+  const displayController = (reset = false) => {
+    // console.log(`drawing on board with ${gameBoard}`);
+    gameBoard.map((item, index) => {
+      const gameCell = gameCells[index];
+      if (gameCell.innerText === "") {
+        // prevent duplicate child write
+        const insertCell = document.createTextNode(item);
+        gameCell.appendChild(insertCell);
+      } else if (reset) {
+        gameCell.innerText = "";
+      }
+    });
+  };
+
+  const resetGameBoard = function () {
+    gameBoard = ["", "", "", "", "", "", "", "", ""];
+    positionResidue = [...Array(9).keys()];
+    this.gameEnd = false;
+    displayController(true);
+  };
+
+  const getPositionResidue = () => positionResidue;
+
+  const updateGameBoard = (playPosition, tool) => {
     gameBoard[playPosition] = tool;
+    positionResidue = positionResidue.filter((cell) => {
+      // update game position residue
+      return cell !== playPosition;
+    });
   };
 
   const winningCombinations = [
@@ -38,40 +65,25 @@ const game = (() => {
 
   const getWinningCombinations = () => winningCombinations;
 
-  const gameCells = document.querySelectorAll(".grid-item");
-  const displayController = () => {
-    gameBoard.map((item, index) => {
-      const gameCell = gameCells[index];
-      if (gameCell.innerText === "") {
-        // prevent duplicate child write
-        const insertCell = document.createTextNode(item);
-        gameCell.appendChild(insertCell);
-      }
-    });
-  };
-
   return {
-    setGameBoard,
-    positionResidue,
-    gameEnd,
+    updateGameBoard,
+    resetGameBoard,
+    getPositionResidue,
     getWinningCombinations,
     displayController,
+    gameEnd,
   };
 })();
 
 const Player = (tool, name = "player") => {
-  const playHistory = [];
-  const getName = () => name;
+  let playHistory = [];
   const getTool = () => tool; // O or X
   const getPlayHistory = () => playHistory;
+  const resetPlayHistory = () => (playHistory = []);
 
   const updateBoard = (playPosition) => {
-    game.setGameBoard(playPosition, tool);
     playHistory.push(playPosition);
-    game.positionResidue = game.positionResidue.filter((cell) => {
-      // update game position residue
-      return cell !== playPosition;
-    });
+    game.updateGameBoard(playPosition, tool);
     game.displayController();
     checkWin();
   };
@@ -83,8 +95,11 @@ const Player = (tool, name = "player") => {
       );
       if (intersection.length === 3) {
         // console.log(intersection);
-        win();
+        return win();
       }
+    }
+    if (game.getPositionResidue().length == 0) {
+      return draw();
     }
   };
 
@@ -94,8 +109,8 @@ const Player = (tool, name = "player") => {
       if (name === "computer") {
         setTimeout(() => {
           const playPosition =
-            game.positionResidue[
-              Math.floor(Math.random() * game.positionResidue.length)
+            game.getPositionResidue()[
+              Math.floor(Math.random() * game.getPositionResidue().length)
             ];
           updateBoard(playPosition);
           resolve();
@@ -108,7 +123,9 @@ const Player = (tool, name = "player") => {
           (e) => {
             if (
               e.target.id &&
-              game.positionResidue.includes(+e.target.id.replace(/^\D+/g, ""))
+              game
+                .getPositionResidue()
+                .includes(+e.target.id.replace(/^\D+/g, ""))
             ) {
               const playPosition = +e.target.id.replace(/^\D+/g, "");
               updateBoard(playPosition);
@@ -125,23 +142,43 @@ const Player = (tool, name = "player") => {
 
   const win = () => {
     game.gameEnd = true;
+    document.getElementById(
+      "show-result"
+    ).innerHTML = `<h1>${name} wins the game!</h1>`;
     console.log(`${name} wins the game!`);
   };
 
-  return { getName, getTool, getPlayHistory, playGame };
+  const draw = () => {
+    game.gameEnd = true;
+    document.getElementById("show-result").innerHTML = `<h1>It's a draw!</h1>`;
+    console.log(`It's a draw!`);
+  };
+
+  return { getTool, getPlayHistory, resetPlayHistory, playGame };
 };
 
 const Controller = () => {
+  const player = Player("O", "player");
+  const computer = Player("X", "computer");
+
   const startGame = async () => {
-    const player = Player("O", "player");
-    const computer = Player("X", "computer");
-    while (game.positionResidue.length > 1 && !game.gameEnd) {
+    while (game.getPositionResidue().length > 0 && !game.gameEnd) {
       await player.playGame();
       await computer.playGame();
       console.log(`player history ${player.getPlayHistory()}`);
       console.log(`computer history ${computer.getPlayHistory()}`);
     }
+    console.log("game over!");
   };
+
+  document.getElementById("reset").addEventListener("click", () => {
+    console.log("clicked reset!");
+    game.resetGameBoard();
+    player.resetPlayHistory();
+    computer.resetPlayHistory();
+    document.getElementById("show-result").innerHTML = "";
+    startGame();
+  });
 
   return { startGame };
 };

@@ -7,8 +7,8 @@
 #game-grid {
   /* border: 1px blue solid; */
   list-style: none;
-  width: 50vw;
-  height: 50vw;
+  width: 40vw;
+  height: 40vw;
 
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
@@ -58,4 +58,13 @@ img {
 #grid-7,
 #grid-8 {
   border-bottom: none;
+}
+
+#show-result {
+  text-align: center;
+}
+
+#reset {
+  display: flex;
+  justify-content: center;
 }
