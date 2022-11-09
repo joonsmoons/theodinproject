@@ -1,17 +1,18 @@
 let myLibrary = [];
 
-function Book(id, name, author, pages, read) {
-  this.id = id;
-  this.name = name;
-  this.author = author;
-  this.pages = pages;
-  this.read = read;
+class Book {
+  constructor(id, name, author, pages, read) {
+    this.id = id;
+    this.name = name;
+    this.author = author;
+    this.pages = pages;
+    this.read = read;
+  }
+  info() {
+    let read = this.read ? "has been read" : "has not been read";
+    return `${this.name}, author ${this.author} has ${this.pages} pages and ${read}`;
+  }
 }
-
-Book.prototype.info = function () {
-  let read = this.read ? "has been read" : "has not been read";
-  return `${this.name}, author ${this.author} has ${this.pages} pages and ${read}`;
-};
 
 function addBookToLibrary(...book) {
   myLibrary = myLibrary.concat(book);
@@ -58,6 +59,7 @@ displayLibrary();
 
 const bookForm = document.querySelector("#add-form");
 const addBook = bookForm.addEventListener("submit", function (e) {
+  console.log("submitted!");
   e.preventDefault();
   const newBook = new Book(
     myLibrary.length + 1,
@@ -74,7 +76,6 @@ const addBook = bookForm.addEventListener("submit", function (e) {
 });
 
 document.addEventListener("click", function (e) {
-  e.preventDefault();
   if (e.target.matches(".remove-book")) {
     // remove book from library
     myLibrary = myLibrary.filter((book) => book.id !== +e.target.parentNode.id);
@@ -86,6 +87,7 @@ document.addEventListener("click", function (e) {
     bookForm.className = "click-off";
     document.querySelector(".main-container").style.filter = "none";
   } else if (e.target.matches("#add-book")) {
+    console.log("adding book!");
     // click add book, blur background
     bookForm.className = "click-on";
     document.querySelector(".main-container").style.filter = "blur(20px)";
@@ -102,6 +104,7 @@ document.addEventListener("click", function (e) {
 });
 
 const resetInputs = () => {
+  console.log("resetting!");
   document.querySelector("#read-y").checked = false;
   document.querySelector("#read-n").checked = false;
   const inputs = document.querySelectorAll("input");
